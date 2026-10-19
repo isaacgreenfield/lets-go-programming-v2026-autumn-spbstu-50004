@@ -7,16 +7,18 @@ import (
 
 func main() {
 	var (
-		depCount  int
-		workCount int
-		maxTemp   int8 = 30
-		minTemp   int8 = 15
-		temp      int8
+		depCount       int
+		workCount      int
+		maxTemp        int8 = 30
+		minTemp        int8 = 15
+		temp           int8
+		InvalidTempErr = errors.New("Invalid temp")
 	)
 
 	_, err := fmt.Scan(&depCount)
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -24,6 +26,7 @@ func main() {
 		_, err = fmt.Scan(&workCount)
 		if err != nil {
 			fmt.Println("Error:", err)
+
 			return
 		}
 
@@ -32,6 +35,8 @@ func main() {
 			_, err := fmt.Scan(&pointer, &temp)
 			if err != nil {
 				fmt.Println("Error:", err)
+
+				return
 			}
 
 			switch pointer {
@@ -44,10 +49,11 @@ func main() {
 					maxTemp = temp
 				}
 			default:
-				err = errors.New("Invalid temp")
+				err = InvalidTempErr
 			}
 			if err != nil {
 				fmt.Println("Error:", err)
+
 				return
 			}
 
