@@ -5,9 +5,7 @@ import (
 )
 
 func main() {
-	var (
-		depCount int
-	)
+	var depCount int
 
 	_, err := fmt.Scan(&depCount)
 	if err != nil {
@@ -30,8 +28,10 @@ func main() {
 		maxTemp := 30
 
 		for range workCount {
-			var pointer string
-			var temp int
+			var (
+				pointer string
+				temp    int
+			)
 
 			_, err := fmt.Scan(&pointer, &temp)
 			if err != nil {
