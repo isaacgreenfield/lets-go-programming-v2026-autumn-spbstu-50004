@@ -5,13 +5,7 @@ import (
 )
 
 func main() {
-	var (
-		depCount  int
-		workCount int
-		maxTemp   int8 = 30
-		minTemp   int8 = 15
-		temp      int8
-	)
+	var depCount int
 
 	_, err := fmt.Scan(&depCount)
 	if err != nil {
@@ -20,16 +14,22 @@ func main() {
 		return
 	}
 
-	for range depCount {
-		_, err = fmt.Scan(&workCount)
+	for i := 0; i < depCount; i++ {
+		var workCount int
+
+		_, err := fmt.Scan(&workCount)
 		if err != nil {
 			fmt.Println("Error:", err)
 
 			return
 		}
 
-		for ; workCount > 0; workCount-- {
+		minTemp := 15
+		maxTemp := 30
+
+		for j := 0; j < workCount; j++ {
 			var pointer string
+			var temp int
 
 			_, err := fmt.Scan(&pointer, &temp)
 			if err != nil {
@@ -56,7 +56,7 @@ func main() {
 			if minTemp > maxTemp {
 				fmt.Println(-1)
 			} else {
-				fmt.Println(minTemp)
+				fmt.Println(maxTemp)
 			}
 		}
 	}
