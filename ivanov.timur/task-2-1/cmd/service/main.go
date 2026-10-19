@@ -1,18 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 )
 
 func main() {
 	var (
-		depCount       int
-		workCount      int
-		maxTemp        int8 = 30
-		minTemp        int8 = 15
-		temp           int8
-		InvalidTempErr = errors.New("Invalid temp")
+		depCount  int
+		workCount int
+		maxTemp   int8 = 30
+		minTemp   int8 = 15
+		temp      int8
 	)
 
 	_, err := fmt.Scan(&depCount)
@@ -32,6 +30,7 @@ func main() {
 
 		for ; workCount > 0; workCount-- {
 			var pointer string
+
 			_, err := fmt.Scan(&pointer, &temp)
 			if err != nil {
 				fmt.Println("Error:", err)
@@ -49,10 +48,7 @@ func main() {
 					maxTemp = temp
 				}
 			default:
-				err = InvalidTempErr
-			}
-			if err != nil {
-				fmt.Println("Error:", err)
+				fmt.Println("Wrong input")
 
 				return
 			}
