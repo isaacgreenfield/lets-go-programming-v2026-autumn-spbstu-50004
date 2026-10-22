@@ -4,20 +4,29 @@ import (
 	"fmt"
 )
 
-type errString string
+const (
+	cMinTemp = 15
+	cMaxTemp = 30
+)
 
-func (e errString) Error() string {
+type badTempError string
+
+func (e badTempError) Error() string {
 	return string(e)
 }
 
 type tempReg struct {
 	minTemp    int
 	maxTemp    int
-	errBadTemp errString
+	errBadTemp badTempError
 }
 
 func newTempReg(minTemp int, maxTemp int) *tempReg {
-	return &tempReg{minTemp: minTemp, maxTemp: maxTemp, errBadTemp: errString("-1")}
+	return &tempReg{
+		minTemp:    minTemp,
+		maxTemp:    maxTemp,
+		errBadTemp: badTempError("-1"),
+	}
 }
 
 func (reg *tempReg) setTemp(pointer string, temp int) (int, error) {
@@ -36,17 +45,13 @@ func (reg *tempReg) setTemp(pointer string, temp int) (int, error) {
 
 	if reg.minTemp > reg.maxTemp {
 		return 0, reg.errBadTemp
-	} else {
-		return reg.minTemp, nil
 	}
+
+	return reg.minTemp, nil
 }
 
 func main() {
 	var depCount int
-	const (
-		CminTemp = 15
-		CmaxTemp = 30
-	)
 
 	_, err := fmt.Scan(&depCount)
 	if err != nil {
@@ -64,7 +69,9 @@ func main() {
 
 			return
 		}
-		rg := newTempReg(CminTemp, CmaxTemp)
+
+		regulator := newTempReg(cMinTemp, cMaxTemp)
+
 		for range workCount {
 			var (
 				pointer string
@@ -78,14 +85,14 @@ func main() {
 				return
 			}
 
-			out, err := rg.setTemp(pointer, temp)
+			out, err := regulator.setTemp(pointer, temp)
 			if err != nil {
 				fmt.Println(-1)
 
 				continue
 			}
-			fmt.Println(out)
 
+			fmt.Println(out)
 		}
 	}
 }
