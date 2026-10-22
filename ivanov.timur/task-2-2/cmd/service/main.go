@@ -2,6 +2,14 @@ package main
 
 import "fmt"
 
+type badHeapError string
+
+func (e badHeapError) Error() string {
+	return string(e)
+}
+
+const ErrBadHeapPushType badHeapError = "IntHeap.Push expects int"
+
 type IntHeap []int
 
 func (h *IntHeap) Len() int {
@@ -16,13 +24,15 @@ func (h *IntHeap) Swap(i, j int) {
 	(*h)[i], (*h)[j] = (*h)[j], (*h)[i]
 }
 
-func (h *IntHeap) Push(x any) {
+func (h *IntHeap) Push(x any) error {
 	value, ok := x.(int)
 	if !ok {
-		panic("IntHeap.Push: value is not int")
+		return ErrBadHeapPushType
 	}
 
 	*h = append(*h, value)
+
+	return nil
 }
 
 func (h *IntHeap) Pop() any {
@@ -67,7 +77,11 @@ func main() {
 			return
 		}
 
-		intHeap.Push(value)
+		if err := intHeap.Push(value); err != nil {
+			fmt.Println(err)
+
+			return
+		}
 	}
 
 	var position int
