@@ -4,8 +4,49 @@ import (
 	"fmt"
 )
 
+type errString string
+
+func (e errString) Error() string {
+	return string(e)
+}
+
+type tempReg struct {
+	minTemp    int
+	maxTemp    int
+	errBadTemp errString
+}
+
+func newTempReg(minTemp int, maxTemp int) *tempReg {
+	return &tempReg{minTemp: minTemp, maxTemp: maxTemp, errBadTemp: errString("-1")}
+}
+
+func (reg *tempReg) setTemp(pointer string, temp int) (int, error) {
+	switch pointer {
+	case ">=":
+		if temp > reg.minTemp {
+			reg.minTemp = temp
+		}
+	case "<=":
+		if temp < reg.maxTemp {
+			reg.maxTemp = temp
+		}
+	default:
+		fmt.Println("Wrong input")
+	}
+
+	if reg.minTemp > reg.maxTemp {
+		return 0, reg.errBadTemp
+	} else {
+		return reg.minTemp, nil
+	}
+}
+
 func main() {
 	var depCount int
+	const (
+		CminTemp = 15
+		CmaxTemp = 30
+	)
 
 	_, err := fmt.Scan(&depCount)
 	if err != nil {
@@ -23,10 +64,7 @@ func main() {
 
 			return
 		}
-
-		minTemp := 15
-		maxTemp := 30
-
+		rg := newTempReg(CminTemp, CmaxTemp)
 		for range workCount {
 			var (
 				pointer string
@@ -40,26 +78,14 @@ func main() {
 				return
 			}
 
-			switch pointer {
-			case ">=":
-				if temp > minTemp {
-					minTemp = temp
-				}
-			case "<=":
-				if temp < maxTemp {
-					maxTemp = temp
-				}
-			default:
-				fmt.Println("Wrong input")
-
-				return
-			}
-
-			if minTemp > maxTemp {
+			out, err := rg.setTemp(pointer, temp)
+			if err != nil {
 				fmt.Println(-1)
-			} else {
-				fmt.Println(minTemp)
+
+				continue
 			}
+			fmt.Println(out)
+
 		}
 	}
 }
