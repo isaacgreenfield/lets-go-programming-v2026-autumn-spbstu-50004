@@ -29,23 +29,23 @@ type OutputCurrency struct {
 func Process(inputFile, outputFile string) error {
 	xmlData, err := os.ReadFile(inputFile)
 	if err != nil {
-		return fmt.Errorf("ошибка чтения входного XML-файла: %w", err)
+		return fmt.Errorf("error reading XML-file: %w", err)
 	}
 
 	var curCurs CurCurs
 	if err := xml.Unmarshal(xmlData, &curCurs); err != nil {
-		return fmt.Errorf("ошибка разбора XML: %w", err)
+		return fmt.Errorf("error decrypting XML-file: %w", err)
 	}
 	var output []OutputCurrency
 	for _, cur := range curCurs.Currencies {
 		numCode, err := strconv.Atoi(cur.NumCode)
 		if err != nil {
-			return fmt.Errorf("некорректный NumCode %q: %w", cur.NumCode, err)
+			return fmt.Errorf("wrong NumCode %q: %w", cur.NumCode, err)
 		}
 		valueStr := strings.ReplaceAll(cur.Value, ",", ".")
 		value, err := strconv.ParseFloat(valueStr, 64)
 		if err != nil {
-			return fmt.Errorf("некорректное Value %q: %w", cur.Value, err)
+			return fmt.Errorf("wrong Value %q: %w", cur.Value, err)
 		}
 		output = append(output, OutputCurrency{
 			NumCode:  numCode,
@@ -58,15 +58,15 @@ func Process(inputFile, outputFile string) error {
 	})
 	dir := filepath.Dir(outputFile)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return fmt.Errorf("ошибка создания директории %q: %w", dir, err)
+		return fmt.Errorf("error dir creation %q: %w", dir, err)
 	}
 
 	jsonData, err := json.MarshalIndent(output, "", "  ")
 	if err != nil {
-		return fmt.Errorf("ошибка формирования JSON: %w", err)
+		return fmt.Errorf("error forming JSON: %w", err)
 	}
 	if err := os.WriteFile(outputFile, jsonData, 0o644); err != nil {
-		return fmt.Errorf("ошибка записи выходного файла: %w", err)
+		return fmt.Errorf("error writing output file: %w", err)
 	}
 
 	return nil
