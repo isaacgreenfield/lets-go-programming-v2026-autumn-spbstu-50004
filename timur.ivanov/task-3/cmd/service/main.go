@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"task-3/internal/config"
 	"task-3/internal/currency"
 )
