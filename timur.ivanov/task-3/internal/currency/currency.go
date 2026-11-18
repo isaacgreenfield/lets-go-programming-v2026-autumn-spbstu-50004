@@ -1,6 +1,7 @@
 package currency
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -9,6 +10,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"golang.org/x/net/html/charset"
 )
 
 type CurCurs struct {
@@ -33,9 +36,14 @@ func Process(inputFile, outputFile string) error {
 	}
 
 	var curCurs CurCurs
-	if err := xml.Unmarshal(xmlData, &curCurs); err != nil {
+
+	decoder := xml.NewDecoder(bytes.NewReader(xmlData))
+	decoder.CharsetReader = charset.NewReaderLabel
+
+	if err := decoder.Decode(&curCurs); err != nil {
 		return fmt.Errorf("error decrypting XML-file: %w", err)
 	}
+
 	var output []OutputCurrency
 	for _, cur := range curCurs.Currencies {
 		numCode, err := strconv.Atoi(cur.NumCode)
@@ -53,9 +61,11 @@ func Process(inputFile, outputFile string) error {
 			Value:    value,
 		})
 	}
+
 	sort.Slice(output, func(i, j int) bool {
 		return output[i].Value > output[j].Value
 	})
+
 	dir := filepath.Dir(outputFile)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("error dir creation %q: %w", dir, err)
