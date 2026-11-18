@@ -44,20 +44,29 @@ func Process(inputFile, outputFile string) error {
 		return fmt.Errorf("error decrypting XML-file: %w", err)
 	}
 
-	var output []OutputCurrency
+	output := make([]OutputCurrency, 0)
+
 	for _, cur := range curCurs.Currencies {
-		numCode, err := strconv.Atoi(cur.NumCode)
+		numCodeStr := strings.TrimSpace(cur.NumCode)
+
+		if numCodeStr == "" {
+			continue
+		}
+
+		numCode, err := strconv.Atoi(numCodeStr)
 		if err != nil {
 			return fmt.Errorf("wrong NumCode %q: %w", cur.NumCode, err)
 		}
-		valueStr := strings.ReplaceAll(cur.Value, ",", ".")
+
+		valueStr := strings.ReplaceAll(strings.TrimSpace(cur.Value), ",", ".")
 		value, err := strconv.ParseFloat(valueStr, 64)
 		if err != nil {
 			return fmt.Errorf("wrong Value %q: %w", cur.Value, err)
 		}
+
 		output = append(output, OutputCurrency{
 			NumCode:  numCode,
-			CharCode: cur.CharCode,
+			CharCode: strings.TrimSpace(cur.CharCode),
 			Value:    value,
 		})
 	}
