@@ -1,5 +1,9 @@
 package intheap
 
+import (
+	"fmt"
+)
+
 type BadHeapError string
 
 func (e BadHeapError) Error() string {
@@ -51,4 +55,53 @@ func (h *IntHeap) Sort() {
 			}
 		}
 	}
+}
+
+func Run() {
+	var amount int
+
+	_, err := fmt.Scan(&amount)
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	intHeap := IntHeap{}
+
+	for range amount {
+		var value int
+
+		_, err := fmt.Scan(&value)
+		if err != nil {
+			fmt.Println(err)
+
+			return
+		}
+
+		if err := intHeap.Push(value); err != nil {
+			fmt.Println(err)
+
+			return
+		}
+	}
+
+	var position int
+
+	_, err = fmt.Scan(&position)
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	intHeap.Sort()
+
+	if position <= 0 || position > intHeap.Len() {
+		fmt.Println(-1)
+
+		return
+	}
+
+	fmt.Println(intHeap[intHeap.Len()-position])
 }
