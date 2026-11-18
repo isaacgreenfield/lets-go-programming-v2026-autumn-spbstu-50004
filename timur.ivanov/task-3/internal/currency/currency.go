@@ -48,20 +48,23 @@ func Process(inputFile, outputFile string) error {
 
 	for _, cur := range curCurs.Currencies {
 		numCodeStr := strings.TrimSpace(cur.NumCode)
-
-		if numCodeStr == "" {
-			continue
-		}
-
-		numCode, err := strconv.Atoi(numCodeStr)
-		if err != nil {
-			return fmt.Errorf("wrong NumCode %q: %w", cur.NumCode, err)
+		var numCode int
+		if numCodeStr != "" {
+			var err error
+			numCode, err = strconv.Atoi(numCodeStr)
+			if err != nil {
+				return fmt.Errorf("wrong NumCode %q: %w", cur.NumCode, err)
+			}
 		}
 
 		valueStr := strings.ReplaceAll(strings.TrimSpace(cur.Value), ",", ".")
-		value, err := strconv.ParseFloat(valueStr, 64)
-		if err != nil {
-			return fmt.Errorf("wrong Value %q: %w", cur.Value, err)
+		var value float64
+		if valueStr != "" {
+			var err error
+			value, err = strconv.ParseFloat(valueStr, 64)
+			if err != nil {
+				return fmt.Errorf("wrong Value %q: %w", cur.Value, err)
+			}
 		}
 
 		output = append(output, OutputCurrency{
