@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -10,6 +11,22 @@ import (
 type Config struct {
 	InputFile  string `yaml:"input-file"`
 	OutputFile string `yaml:"output-file"`
+}
+
+func LoadFromArgs() *Config {
+	configPath := flag.String("config", "", "path to config file")
+	flag.Parse()
+
+	if *configPath == "" {
+		panic("no path")
+	}
+
+	cfg, err := Load(*configPath)
+	if err != nil {
+		panic(err)
+	}
+
+	return cfg
 }
 
 func Load(path string) (*Config, error) {

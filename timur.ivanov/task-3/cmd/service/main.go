@@ -1,29 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"flag"
 	"task-3/internal/config"
 	"task-3/internal/currency"
 )
 
 func main() {
-	configPath := flag.String("config", "", "path to config file")
-	flag.Parse()
+	cfg := config.LoadFromArgs()
 
-	if *configPath == "" {
-		panic("no path")
-	}
-
-	cfg, err := config.Load(*configPath)
-	if err != nil {
+	if err := currency.Process(cfg.InputFile, cfg.OutputFile); err != nil {
 		panic(err)
 	}
-
-	err = currency.Process(cfg.InputFile, cfg.OutputFile)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("done")
 }
