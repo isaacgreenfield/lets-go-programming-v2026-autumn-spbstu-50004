@@ -15,10 +15,12 @@ func main() {
 	if *configPath == "" {
 		panic("no path")
 	}
+
 	cfg, err := config.Load(*configPath)
 	if err != nil {
 		panic(err)
 	}
+
 	err = currency.Process(cfg.InputFile, cfg.OutputFile)
 	if err != nil {
 		panic(err)
