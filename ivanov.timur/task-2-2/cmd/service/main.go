@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"task-2-2/internal/intheap"
 )
 
@@ -11,6 +12,7 @@ func main() {
 	_, err := fmt.Scan(&amount)
 	if err != nil {
 		fmt.Println(err)
+
 		return
 	}
 
@@ -22,11 +24,13 @@ func main() {
 		_, err := fmt.Scan(&value)
 		if err != nil {
 			fmt.Println(err)
+
 			return
 		}
 
 		if err := intHeap.Push(value); err != nil {
 			fmt.Println(err)
+
 			return
 		}
 	}
@@ -36,6 +40,7 @@ func main() {
 	_, err = fmt.Scan(&position)
 	if err != nil {
 		fmt.Println(err)
+
 		return
 	}
 
@@ -43,6 +48,7 @@ func main() {
 
 	if position <= 0 || position > intHeap.Len() {
 		fmt.Println(-1)
+
 		return
 	}
 
