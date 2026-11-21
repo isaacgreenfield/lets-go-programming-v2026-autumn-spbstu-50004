@@ -25,20 +25,20 @@ type CurCurs struct {
 }
 
 type Currency struct {
-	NumCode  int     `xml:"NumCode"  json:"num_code"`
-	CharCode string  `xml:"CharCode" json:"char_code"`
-	Value    float64 `xml:"Value"    json:"value"`
+	NumCode  int     `json:"num_code"  xml:"NumCode"`
+	CharCode string  `json:"char_code" xml:"CharCode"`
+	Value    float64 `json:"value"     xml:"Value"`
 }
 
-func (c *Currency) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (c *Currency) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
 	var raw struct {
 		NumCode  string `xml:"NumCode"`
 		CharCode string `xml:"CharCode"`
 		Value    string `xml:"Value"`
 	}
 
-	if err := d.DecodeElement(&raw, &start); err != nil {
-		return err
+	if err := decoder.DecodeElement(&raw, &start); err != nil {
+		return fmt.Errorf("error decoding currency element: %w", err)
 	}
 
 	numCode := 0
